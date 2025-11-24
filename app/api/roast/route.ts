@@ -33,9 +33,11 @@ export async function POST(req: Request) {
       headers: {
         "Authorization": `Bearer ${HF_TOKEN}`,
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://roastyfy.vercel.app",
+        "X-Title": "Roastify App"
       },
       body: JSON.stringify({
-        model: "x-ai/grok-4.1-fast",
+        model: "nousresearch/hermes-2-pro-mistral",
         messages: [
           { role: "user", content: prompt }
         ],
