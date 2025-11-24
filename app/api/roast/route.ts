@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       Roast:
     `;
 
-    const HF_TOKEN = "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";
+    const HF_TOKEN = process.env.OPEN_ROUTER_TOKEN!;
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "x-ai/grok-4.1-fast",  // one of the free models
+        model: "x-ai/grok-4.1-fast",
         messages: [
           { role: "user", content: prompt }
         ],

@@ -21,10 +21,8 @@ export async function GET() {
     }
   );
 
-  // Spotify error response also must be parsed
   const data = await res.json().catch(() => null);
 
-  // If Spotify returned a non-JSON response
   if (!data || typeof data !== "object") {
     return NextResponse.json(
       { error: "Invalid response from Spotify" },
@@ -32,12 +30,10 @@ export async function GET() {
     );
   }
 
-  // If token expired
   if (data.error) {
     return NextResponse.json(data, { status: res.status });
   }
 
-  // Safe return
   return NextResponse.json({
     tracks: data.items || [],
   });

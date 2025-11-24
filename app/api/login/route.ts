@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-let client_id = 'ecd44eba401a48c48e8e5b770ebfb62b';
-const redirect_uri = "http://127.0.0.1:3000/api/callback";
+const client_id = process.env.SPOTIFY_CLIENT_ID!;
+const redirect_uri = process.env.REDIRECT_URI!;
 
 function generateRandomString(length: number) {
   return [...Array(length)]
@@ -26,7 +26,7 @@ export async function GET() {
 
     response.cookies.set("spotify_auth_state", state, {
         httpOnly: true,
-        secure: false,   // development only
+        secure: process.env.ENV !== "development",
         sameSite: "lax",
         path: "/",
     });

@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { cookies } from "next/headers";
 
-const client_id = 'ecd44eba401a48c48e8e5b770ebfb62b';
-const client_secret = '7871193b6cab45acb5cabaae73a02c5e';
-const redirect_uri = "http://127.0.0.1:3000/api/callback";
+const client_id = process.env.SPOTIFY_CLIENT_ID!;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET!;
+const redirect_uri = process.env.REDIRECT_URI!;
 
 export async function GET(req: Request) {
     const url = new URL(req.url);
@@ -39,7 +39,7 @@ export async function GET(req: Request) {
 
     const { access_token, refresh_token } = tokenRes.data;
 
-    const response = NextResponse.redirect("http://127.0.0.1:3000");
+    const response = NextResponse.redirect(process.env.REDIRECT!);
 
     response.cookies.set("spotify_access_token", access_token, {
         httpOnly: true,
