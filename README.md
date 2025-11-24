@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roastify
 
-## Getting Started
+Roastify is a small web app that analyzes a user's Spotify top tracks and generates a short, sarcastic roast based purely on their music taste. The app uses Spotify OAuth for authentication, retrieves profile and listening data using the Spotify Web API, and sends that data to a model through OpenRouter to generate the roast. The UI is designed to resemble the clean, minimal feel of Spotify.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Next.js (App Router)
+- Tailwind CSS
+- OpenRouter for text generation
+- Spotify Web API
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Spotify Authentication Flow
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The app implements the Spotify Authorization Code Flow.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. User clicks the login button, which redirects to `/api/login`.
+2. `/api/login` generates a random state, sets it in an HTTP-only cookie, and redirects the user to Spotify’s authorization page.
+3. Spotify redirects back to `/api/callback` with `code` and `state`.
+4. The callback route validates the returned state, exchanges the code for an access token and refresh token, stores them in cookies, and redirects the user back to the homepage.
+5. The frontend calls `/api/user` and `/api/top-tracks` to fetch the user profile and the user’s top tracks from Spotify.
 
-## Learn More
+## API Routes
 
-To learn more about Next.js, take a look at the following resources:
+### `/api/login`
+Starts the OAuth flow and sets the `spotify_auth_state` cookie.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### `/api/callback`
+Validates the state, exchanges the code for access and refresh tokens, writes them into secure cookies, and sends the user back to the main page.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `/api/user`
+Fetches and returns the user’s Spotify profile (display name, avatar, follower count, and profile URL).
 
-## Deploy on Vercel
+### `/api/top-tracks`
+Fetches the user's long-term top tracks using the stored access token.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### `/api/roast`
+Receives the user's track list, constructs a short prompt that restricts hyphens and avoids personal insults, then calls OpenRouter to generate a one or two-line roast.
