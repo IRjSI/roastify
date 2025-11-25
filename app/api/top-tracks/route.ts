@@ -5,6 +5,8 @@ export async function GET() {
   const cookieStore = await cookies();
   const access_token = cookieStore.get("spotify_access_token")?.value;
 
+  console.log(access_token)
+
   if (!access_token) {
     return NextResponse.json(
       { error: "Not authenticated" },

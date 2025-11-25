@@ -16,7 +16,7 @@ export async function GET() {
         response_type: "code",
         client_id,
         redirect_uri,
-        scope: "app-remote-control user-top-read",
+        scope: "user-read-email user-read-private user-top-read",
         state,
     });
 

@@ -43,14 +43,14 @@ export async function GET(req: Request) {
 
     response.cookies.set("spotify_access_token", access_token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.ENV !== "development",
         sameSite: "lax",
         path: "/"
     });
 
     response.cookies.set("spotify_refresh_token", refresh_token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.ENV !== "development",
         sameSite: "lax",
         path: "/"
     });
