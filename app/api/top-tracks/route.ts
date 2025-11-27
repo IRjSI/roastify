@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
-  const cookieStore = await cookies();
   // const access_token = cookieStore.get("spotify_access_token")?.value;
   // const access_token = cookieStore.get("next-auth.session-token")?.value;
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+
+  console.log(token);
 
   if (!token || !token.accessToken) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
