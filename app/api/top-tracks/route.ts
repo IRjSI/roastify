@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
     secureCookie: process.env.ENV !== "development"
   })
 
-  console.log(token);
+  console.log("Token:", token);
+  console.log("Has secret:", !!process.env.NEXTAUTH_SECRET);
 
   if (!token || !token.accessToken) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
