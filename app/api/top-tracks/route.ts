@@ -5,7 +5,13 @@ export async function GET(req: NextRequest) {
   // const access_token = cookieStore.get("spotify_access_token")?.value;
   // const access_token = cookieStore.get("next-auth.session-token")?.value;
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  console.log("All cookies:", req.cookies.getAll())
+  
+  const token = await getToken({ 
+    req, 
+    secret: process.env.NEXTAUTH_SECRET,
+    secureCookie: process.env.ENV !== "development"
+  })
 
   console.log(token);
 
