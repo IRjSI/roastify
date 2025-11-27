@@ -34,7 +34,6 @@ export default function Home() {
     if (!res.ok) return;
     const json = await res.json();
     setData(json.tracks);
-    console.log(json);
   }
 
   async function roast(tracks: any) {
