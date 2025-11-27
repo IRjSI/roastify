@@ -1,30 +1,40 @@
 "use client"
 
 import { useEffect, useState } from "react";
+import { useSession, signIn } from "next-auth/react"
+
+// interface IUser {
+//   display_name: string;
+//   images: [
+//     {
+//       url: string;
+//     }
+//   ];
+//   external_urls: {
+//     spotify: string;
+//   };
+// }
 
 interface IUser {
-  display_name: string;
-  images: [
-    {
-      url: string;
-    }
-  ];
-  external_urls: {
-    spotify: string;
-  };
+  name?: string | null | undefined;
+  image?: string | null | undefined;
+  email?: string | null | undefined;
 }
 
 export default function Home() {
   const [data, setData] = useState(null);
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser>();
   const [roastText, setRoastText] = useState("");
   const [hasRoasted, setHasRoasted] = useState(false);
+
+  const { data: session } = useSession()
 
   async function getTopTracks() {
     const res = await fetch("/api/top-tracks");
     if (!res.ok) return;
     const json = await res.json();
     setData(json.tracks);
+    console.log(json);
   }
 
   async function roast(tracks: any) {
@@ -42,35 +52,25 @@ export default function Home() {
   }
 
   const spotify_oauth = () => {
-    window.location.href = "/api/login";
+    signIn("spotify")
   };
 
   const get_user = async () => {
-    const res = await fetch("/api/user");
-    if (!res.ok) {
-      setUser(null);
-      return;
-    }
-    const data = await res.json();
-    if (data.data.error) {
-      setUser(null);
-      return;
-    }
-    setUser(data.data);
+    setUser(session?.user);
   }
 
   useEffect(() => {
     get_user();
     getTopTracks();
-  }, []);
-
+  }, [session]);
+  
   useEffect(() => {
-    if (user && data && !hasRoasted) {
+    if (user && !hasRoasted) {
       roast(data);
     }
   }, [user, data, hasRoasted]);
 
-  if (!user) {
+  if (!session) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
         <button
@@ -88,9 +88,9 @@ export default function Home() {
     <div className="flex flex-col items-center min-h-screen bg-black text-white p-6">
 
       <div className="flex items-center gap-4 mb-6">
-        {user?.images[0].url ? (
+        {user?.image ? (
           <img
-            src={user.images[0].url}
+            src={user.image}
             alt="avatar"
             className="w-16 h-16 rounded-full border border-green-500"
           />
@@ -99,14 +99,14 @@ export default function Home() {
         )}
 
         <div>
-          <h2 className="text-xl font-bold">{user?.display_name}</h2>
-          <a
+          <h2 className="text-xl font-bold">{user?.name}</h2>
+          {/* <a
             href={user?.external_urls.spotify}
             target="_blank"
             className="text-green-400 text-sm underline"
           >
             View Spotify Profile
-          </a>
+          </a> */}
         </div>
       </div>
 

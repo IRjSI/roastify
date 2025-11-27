@@ -11,7 +11,9 @@
   "dependencies": {
     "@huggingface/inference": "^4.13.3",
     "axios": "^1.13.2",
+    "better-auth": "^1.4.3",
     "next": "16.0.3",
+    "next-auth": "^4.24.13",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },

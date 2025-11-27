@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import SpotifyProvider from "next-auth/providers/spotify";
 
 const client_id = process.env.SPOTIFY_CLIENT_ID!;
 const redirect_uri = process.env.REDIRECT_URI!;

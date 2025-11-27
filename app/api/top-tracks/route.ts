@@ -1,24 +1,30 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { getToken } from "next-auth/jwt";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const cookieStore = await cookies();
-  const access_token = cookieStore.get("spotify_access_token")?.value;
+  // const access_token = cookieStore.get("spotify_access_token")?.value;
+  // const access_token = cookieStore.get("next-auth.session-token")?.value;
 
-  console.log(access_token)
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
-  if (!access_token) {
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+  if (!token || !token.accessToken) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
   }
+
+  // if (!access_token) {
+  //   return NextResponse.json(
+  //     { error: "Not authenticated" },
+  //     { status: 401 }
+  //   );
+  // }
 
   const res = await fetch(
     "https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=10",
     {
       headers: {
-        Authorization: `Bearer ${access_token}`,
+        Authorization: `Bearer ${token.accessToken}`,
       },
     }
   );
